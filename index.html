@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>시작 페이지</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root{
+    --bg: #12151c;
+    --panel: #1b2030;
+    --panel-hover: #232a3d;
+    --line: #2a3143;
+    --text: #e7e9f0;
+    --sub: #8a91a6;
+    --mono: #6f7690;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; height:100%;
+    background: radial-gradient(1200px 800px at 15% -10%, #1a2036 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  }
+  .wrap{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 56px 32px 80px;
+  }
+  header{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom: 48px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 20px;
+  }
+  header h1{
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin:0;
+  }
+  #clock{
+    font-family: 'SFMono-Regular', Consolas, 'Courier New', monospace;
+    font-size: 13px;
+    color: var(--mono);
+    letter-spacing: 0.02em;
+  }
+  .row{
+    margin-bottom: 40px;
+  }
+  .row-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom: 18px;
+  }
+  .dot{
+    width:8px; height:8px; border-radius:50%;
+    flex:0 0 auto;
+  }
+  .row-title{
+    font-size: 13px;
+    font-weight:600;
+    color: var(--sub);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .grid{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .site{
+    width: 104px;
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    gap:8px;
+    text-decoration:none;
+    color: var(--text);
+    padding: 12px 6px 10px;
+    border-radius: 14px;
+    transition: transform .12s ease, background .12s ease;
+  }
+  .site:hover{
+    background: var(--panel-hover);
+    transform: translateY(-2px);
+  }
+  .icon-box{
+    width: 64px; height:64px;
+    border-radius: 16px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    transition: transform .15s ease;
+  }
+  .icon-box img{
+    width: 36px; height:36px;
+  }
+  /* 마우스를 올리면 아이콘만 살짝 커집니다 */
+  .site:hover .icon-box{
+    transform: scale(1.12);
+  }
+  .icon-fallback{
+    width:100%; height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 22px;
+    font-weight:700;
+    color:#fff;
+  }
+  .site span{
+    font-size: 12px;
+    text-align:center;
+    line-height:1.3;
+    color: var(--sub);
+    max-width: 100px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .site:hover span{ color: var(--text); }
+
+  footer{
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--mono);
+    line-height:1.7;
+  }
+  footer code{
+    background: var(--panel);
+    padding: 1px 6px;
+    border-radius: 6px;
+    border:1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>철륵이 즐겨찾기 v1.0</h1>
+    <div id="clock"></div>
+  </header>
+
+  <div id="rows"></div>
+
+  <footer>
+    새 사이트를 추가하려면 아래 &lt;script&gt; 안의 <code>SITES</code> 배열에 한 줄만 추가하면 됩니다.<br>
+    아이콘은 자동으로 불러오며, 실패 시 이름 첫 글자가 대신 표시됩니다.
+  </footer>
+</div>
+
+<script>
+/* =========================================================
+   여기만 수정하면 됩니다.
+   - category : 줄(행) 이름 — 같은 이름끼리 자동으로 한 줄에 모입니다.
+   - name     : 아이콘 밑에 표시할 한글 이름
+   - url      : 이동할 주소
+   새 항목은 원하는 위치에 아래 형식으로 한 줄 추가하면 끝!
+   ========================================================= */
+const SITES = [
+  // 포털
+  { category: "포털", name: "네이버",   url: "https://www.naver.com" },
+  { category: "포털", name: "야구",     url: "https://m.sports.naver.com/kbaseball/index" },
+  { category: "포털", name: "구글",     url: "https://www.google.com" },
+  { category: "포털", name: "네이트",   url: "https://www.nate.com" },
+  { category: "포털", name: "인벤",     url: "https://www.inven.co.kr" },
+  { category: "포털", name: "루리웹",   url: "https://bbs.ruliweb.com" },
+
+  // AI
+  { category: "AI",  name: "챗GPT",    url: "https://chat.openai.com" },
+  { category: "AI",  name: "클로드",    url: "https://claude.ai" },
+  { category: "AI",  name: "제미나이",  url: "https://gemini.google.com" },
+  { category: "AI",  name: "에테르",    url: "https://www.aetherforgeai.com/ko/history/sprite" }, 
+  { category: "AI",  name: "수노",      url: "https://suno.com" },
+  { category: "AI",  name: "퀵매직",    url: "https://www.quickmagic.ai/home" },
+  { category: "AI",  name: "시댄스",    url: "https://dreamina.capcut.com/ai-tool/home" }, 
+  { category: "AI",  name: "엔바토",    url: "https://elements.envato.com" },
+
+  // OTT
+  { category: "OTT", name: "유튜브",   url: "https://www.youtube.com" },
+  { category: "OTT", name: "넷플릭스", url: "https://www.netflix.com" },
+  { category: "OTT", name: "디즈니+",  url: "https://www.disneyplus.com" },
+  { category: "OTT", name: "티빙",     url: "https://www.tving.com" },
+];
+
+/* 줄(행)이 화면에 나오는 순서를 정합니다.
+   새 카테고리를 추가했다면 여기에도 이름을 넣어주세요. */
+const CATEGORY_ORDER = ["포털", "AI", "OTT"];
+
+/* 카테고리별 표시 색상 (없는 카테고리는 회색으로 자동 처리) */
+const CATEGORY_COLOR = {
+  "포털": "#3b82f6",
+  "AI":   "#a855f7",
+  "OTT":  "#f43f5e",
+};
+const DEFAULT_COLOR = "#6b7280";
+
+function faviconUrl(pageUrl){
+  try{
+    const host = new URL(pageUrl).hostname;
+    return `https://www.google.com/s2/favicons?domain=${host}&sz=128`;
+  }catch(e){ return ""; }
+}
+
+function renderRows(){
+  const root = document.getElementById("rows");
+  const grouped = {};
+  SITES.forEach(site => {
+    if(!grouped[site.category]) grouped[site.category] = [];
+    grouped[site.category].push(site);
+  });
+
+  // CATEGORY_ORDER에 없는 새 카테고리도 놓치지 않고 뒤에 자동으로 붙여줍니다.
+  const order = [...CATEGORY_ORDER];
+  Object.keys(grouped).forEach(cat => { if(!order.includes(cat)) order.push(cat); });
+
+  order.forEach(cat => {
+    const items = grouped[cat];
+    if(!items || items.length === 0) return;
+
+    const row = document.createElement("div");
+    row.className = "row";
+
+    const color = CATEGORY_COLOR[cat] || DEFAULT_COLOR;
+    row.innerHTML = `
+      <div class="row-head">
+        <span class="dot" style="background:${color}"></span>
+        <span class="row-title">${cat}</span>
+      </div>
+      <div class="grid"></div>
+    `;
+
+    const grid = row.querySelector(".grid");
+    items.forEach(site => {
+      const a = document.createElement("a");
+      a.className = "site";
+      const hasUrl = !!(site.url && site.url.trim());
+      a.href = hasUrl ? site.url : "#";
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      const initial = site.name.trim().charAt(0).toUpperCase();
+
+      if(hasUrl){
+        a.innerHTML = `
+          <div class="icon-box">
+            <img src="${faviconUrl(site.url)}" alt=""
+                 onerror="this.parentElement.innerHTML='<div class=&quot;icon-fallback&quot; style=&quot;background:${color}&quot;>${initial}</div>'">
+          </div>
+          <span>${site.name}</span>
+        `;
+      } else {
+        // 주소가 아직 비어있는 항목: 요청 보내지 않고 바로 대체 글자 표시
+        a.innerHTML = `
+          <div class="icon-box">
+            <div class="icon-fallback" style="background:${color}">${initial}</div>
+          </div>
+          <span>${site.name} ⚠️</span>
+        `;
+      }
+      grid.appendChild(a);
+    });
+
+    root.appendChild(row);
+  });
+}
+
+function tickClock(){
+  const el = document.getElementById("clock");
+  const now = new Date();
+  const days = ["일","월","화","수","목","금","토"];
+  const y = now.getFullYear();
+  const m = now.getMonth()+1;
+  const d = now.getDate();
+  const w = days[now.getDay()];
+  const hh = String(now.getHours()).padStart(2,"0");
+  const mm = String(now.getMinutes()).padStart(2,"0");
+  el.textContent = `${y}.${String(m).padStart(2,"0")}.${String(d).padStart(2,"0")} (${w}) ${hh}:${mm}`;
+}
+
+renderRows();
+tickClock();
+setInterval(tickClock, 1000 * 30);
+</script>
+</body>
+</html>
