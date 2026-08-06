@@ -140,6 +140,53 @@
     border-radius: 6px;
     border:1px solid var(--line);
   }
+  
+  .search-wrap{
+  display:flex;
+  justify-content:center;
+  margin-bottom: 44px;
+}
+.search-box{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 10px;
+  width: 100%;
+  max-width: 480px;
+}
+.search-box select{
+  background: transparent;
+  color: var(--text);
+  border: none;
+  border-right: 1px solid var(--line);
+  padding-right: 10px;
+  font-size: 13px;
+  outline:none;
+}
+.search-box input{
+  flex:1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 14px;
+  padding: 6px 4px;
+}
+.search-box input::placeholder{ color: var(--sub); }
+.search-box button{
+  background: var(--panel-hover);
+  border: 1px solid var(--line);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor:pointer;
+}
+.search-box button:hover{ background: var(--line); }
+  
 </style>
 </head>
 <body>
@@ -148,7 +195,18 @@
     <h1>철륵이 즐겨찾기 v1.0</h1>
     <div id="clock"></div>
   </header>
-
+  
+<div class="search-wrap">
+  <form id="searchForm" class="search-box" onsubmit="return doSearch(event)">
+    <select id="engine">
+      <option value="naver">네이버</option>
+      <option value="google">구글</option>
+    </select>
+    <input id="query" type="text" placeholder="검색어를 입력하세요" autocomplete="off">
+    <button type="submit">검색</button>
+  </form>
+</div>
+  
   <div id="rows"></div>
 
   <footer>
@@ -288,6 +346,19 @@ function tickClock(){
 renderRows();
 tickClock();
 setInterval(tickClock, 1000 * 30);
+
+  function doSearch(e){
+  e.preventDefault();
+  const q = document.getElementById("query").value.trim();
+  if(!q) return false;
+  const engine = document.getElementById("engine").value;
+  const url = engine === "naver"
+    ? `https://search.naver.com/search.naver?query=${encodeURIComponent(q)}`
+    : `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+  window.open(url, "_blank");
+  return false;
+}
 </script>
+
 </body>
 </html>
